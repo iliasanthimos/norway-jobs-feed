@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ThemeService } from '../../../core/services/theme.service';
+import { ThemeService } from '../../../core/services';
 
 @Component({
   selector: 'aa-header',
@@ -11,9 +11,9 @@ import { ThemeService } from '../../../core/services/theme.service';
   standalone: true,
 })
 export class HeaderComponent {
-  isMenuOpen = false;
+  protected themeService = inject(ThemeService);
 
-  constructor(public themeService: ThemeService) {}
+  isMenuOpen = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {

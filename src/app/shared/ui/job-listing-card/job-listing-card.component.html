@@ -1,0 +1,60 @@
+<div
+  class="aa--hover:scale-105 aa--hover:shadow-2xl aa--flex aa--h-full aa--flex-col aa--justify-between aa--space-y-4 aa--rounded-xl aa--bg-background-light aa--p-6 aa--text-text-light aa--shadow-lg aa--transition-transform dark:aa--bg-background-dark dark:aa--text-text-dark"
+>
+  <div>
+    <div class="aa--flex aa--items-center aa--justify-between">
+      <h3
+        class="aa--mb-3 aa--truncate aa--text-lg aa--font-extrabold aa--text-primary dark:aa--text-primary-light lg:aa--text-xl"
+      >
+        {{ job.title }}
+      </h3>
+      <fa-icon
+        [icon]="faHeart"
+        class="transition-transform aa--ml-2 aa--cursor-pointer aa--text-accent hover:aa--scale-110"
+      />
+    </div>
+    <div class="aa--space-y-2 aa--text-sm">
+      <p class="aa--flex aa--items-center">
+        <fa-icon [icon]="faBuilding" class="aa--mr-2 aa--text-accent" />
+        <span
+          class="aa--ml-1 aa--truncate"
+          title="{{ job._feed_entry.businessName || 'Unknown' }}"
+        >
+          {{ job._feed_entry.businessName || 'Unknown' }}
+        </span>
+      </p>
+
+      <p class="aa--flex aa--items-center">
+        <fa-icon [icon]="faMapMarkerAlt" class="aa--mr-2 aa--text-secondary" />
+        <span
+          class="aa--ml-1 aa--truncate"
+          title="{{ job._feed_entry.municipal || 'Unknown' }}"
+        >
+          {{ job._feed_entry.municipal || 'Unknown' }}
+        </span>
+      </p>
+
+      <p class="aa--flex aa--items-center">
+        <fa-icon [icon]="getStatusIcon()" class="aa--mr-2" [ngClass]="getStatusClass()" />
+        <span class="aa--ml-1 aa--font-bold" [ngClass]="getStatusClass()">
+          {{ job._feed_entry.status }}
+        </span>
+      </p>
+    </div>
+  </div>
+
+  <div>
+    <p
+      class="aa--mt-4 aa--text-xs aa--italic aa--text-secondary-dark dark:aa--text-secondary-light"
+    >
+      Last Modified: {{ job._feed_entry.sistEndret | date: 'medium' }}
+    </p>
+    <button
+      class="from-primary to-accent aa--hover:opacity-95 aa--hover:scale-105 dark:aa--hover:from-primary-light dark:aa--hover:to-accent-light aa--mt-4 aa--w-full aa--rounded-lg aa--bg-primary aa--bg-gradient-to-r aa--px-6 aa--py-3 aa--text-sm aa--font-medium aa--text-white aa--shadow-md aa--transition-transform hover:aa--shadow-lg focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light"
+      type="button"
+      aria-label="View job details"
+    >
+      View Details
+    </button>
+  </div>
+</div>
