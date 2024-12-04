@@ -1,0 +1,45 @@
+<header
+  class="aa--fixed aa--top-0 aa--z-50 aa--w-full aa--bg-primary aa--p-4 aa--text-white aa--shadow-md dark:aa--bg-gray-900"
+  data-test-id="header"
+>
+  <nav class="aa--container aa--mx-auto aa--flex aa--items-center aa--justify-between">
+    <a routerLink="/" class="aa--text-2xl aa--font-semibold">JobFinder</a>
+    <div class="aa--hidden aa--items-center aa--space-x-4 md:aa--flex">
+      <ng-container *ngTemplateOutlet="menuItems" />
+    </div>
+    <button
+      class="aa--block aa--text-white focus:aa--outline-none md:aa--hidden"
+      (click)="toggleMenu()"
+      aria-label="Toggle Menu"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        class="aa--h-6 aa--w-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16m-7 6h7"
+        />
+      </svg>
+    </button>
+  </nav>
+  <div
+    class="aa--absolute aa--left-0 aa--top-full aa--z-40 aa--w-full aa--space-y-4 aa--bg-primary aa--p-4 dark:aa--bg-gray-900"
+    *ngIf="isMenuOpen"
+  >
+    <ng-container *ngTemplateOutlet="menuItems" />
+  </div>
+
+  <ng-template #menuItems>
+    <a routerLink="/" class="aa--block hover:aa--underline">Home</a>
+    <a routerLink="/favorites" class="aa--block hover:aa--underline">Favorites</a>
+    <button (click)="toggleTheme()">
+      {{ themeService.isDarkMode() ? '🌞' : '🌜' }}
+    </button>
+  </ng-template>
+</header>
