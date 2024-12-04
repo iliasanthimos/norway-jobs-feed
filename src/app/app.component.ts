@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { FooterComponent } from './shared/ui/footer/footer.component';
-import { HeaderComponent } from './shared/ui/header/header.component';
+import { HeaderComponent, FooterComponent } from './shared/ui';
 
 @Component({
   selector: 'aa-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, FontAwesomeModule],
   standalone: true,
   template: `
     <div class="content">
