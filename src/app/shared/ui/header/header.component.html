@@ -12,20 +12,7 @@
       (click)="toggleMenu()"
       aria-label="Toggle Menu"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        class="aa--h-6 aa--w-6"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16m-7 6h7"
-        />
-      </svg>
+      <fa-icon [icon]="isMenuOpen ? faTimes : faBars" />
     </button>
   </nav>
   <div
@@ -36,10 +23,18 @@
   </div>
 
   <ng-template #menuItems>
-    <a routerLink="/" class="aa--block hover:aa--underline">Home</a>
-    <a routerLink="/favorites" class="aa--block hover:aa--underline">Favorites</a>
+    <a routerLink="/" class="aa--block hover:aa--underline" (click)="toggleMenu()">
+      Jobs
+    </a>
+    <a
+      routerLink="/favorites"
+      class="aa--block hover:aa--underline"
+      (click)="toggleMenu()"
+    >
+      Favorites
+    </a>
     <button (click)="toggleTheme()">
-      {{ themeService.isDarkMode() ? '🌞' : '🌜' }}
+      <fa-icon [icon]="themeService.isDarkMode() ? faSun : faMoon" />
     </button>
   </ng-template>
 </header>
