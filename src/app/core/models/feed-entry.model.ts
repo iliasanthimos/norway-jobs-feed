@@ -1,6 +1,6 @@
 export interface FeedEntry {
   uuid: string;
-  json: FeedEntryDetails;
+  ad_content: FeedEntryDetails;
   sistEndret: string;
   status: string;
 }
