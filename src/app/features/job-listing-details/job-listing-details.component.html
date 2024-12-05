@@ -1,0 +1,170 @@
+<div *ngIf="loading()" class="loading">
+  <aa-job-listing-details-skeleton />
+</div>
+
+<div *ngIf="error() && !loading()" class="error">
+  <p>Failed to load job details. Please try again later.</p>
+</div>
+
+<div
+  *ngIf="!loading() && !error() && job?.status !== 'ACTIVE'"
+  class="job-unavailable aa--mx-auto aa--max-w-3xl aa--rounded-lg aa--bg-red-100 aa--p-5 aa--text-red-800 aa--shadow-md"
+>
+  <h2 class="aa--text-xl aa--font-bold">Job Unavailable</h2>
+  <p class="aa--mt-2">
+    This job is currently unavailable. It may have been closed or no longer accepting
+    applications.
+  </p>
+</div>
+
+<div
+  *ngIf="!loading() && !error() && job?.status === 'ACTIVE'"
+  class="job-details shadow-lg aa--mx-auto aa--max-w-3xl aa--rounded-lg aa--bg-background-light aa--p-5 dark:aa--bg-background-dark"
+>
+  <div class="aa--relative aa--flex aa--flex-col aa--items-start">
+    <h1 class="aa--text-2xl aa--font-bold aa--text-primary dark:aa--text-primary-light">
+      {{ job?.ad_content?.title }}
+    </h1>
+    <p class="aa--mt-1 aa--text-xs aa--text-secondary-dark dark:aa--text-secondary-light">
+      {{ job?.ad_content?.published | date: 'mediumDate' }}
+    </p>
+    <div
+      class="transition-transform aa--absolute aa--right-0 aa--top-0 aa--mr-2 aa--mt-1 aa--cursor-pointer aa--text-accent hover:aa--scale-110"
+    >
+      <aa-favorite-toggle [jobId]="job?.uuid!" />
+    </div>
+
+    <section class="aa--mt-4">
+      <h2
+        class="aa--text-base aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+      >
+        Description
+      </h2>
+      <p
+        class="aa--mt-2 aa--text-sm aa--text-text-light dark:aa--text-text-dark"
+        [innerHTML]="safeDescription || 'N/A'"
+      ></p>
+    </section>
+
+    <section class="aa--mt-5">
+      <h2
+        class="aa--text-base aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+      >
+        Employer
+      </h2>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Name:</strong>
+        {{ job?.ad_content?.employer?.name || 'N/A' }}
+      </p>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Description:</strong>
+      </p>
+      <p
+        class="aa--text-sm aa--text-text-light dark:aa--text-text-dark"
+        [innerHTML]="safeEmployerDescription || 'N/A'"
+      ></p>
+
+      <a
+        *ngIf="job?.ad_content?.employer?.homepage"
+        [href]="job?.ad_content?.employer?.homepage"
+        class="aa--text-sm aa--text-primary aa--underline dark:aa--text-primary-light"
+        target="_blank"
+      >
+        Visit Homepage
+      </a>
+    </section>
+
+    <section class="aa--mt-5">
+      <h2
+        class="aa--text-base aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+      >
+        Work Locations
+      </h2>
+      <ul class="aa--mt-2 aa--space-y-2 aa--text-sm">
+        <li *ngFor="let location of job?.ad_content?.workLocations">
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            F
+            <strong>Address:</strong>
+            {{ location?.address || 'N/A' }}
+          </p>
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>City:</strong>
+            {{ location?.city || 'N/A' }}
+          </p>
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>Postal Code:</strong>
+            {{ location?.postalCode || 'N/A' }}
+          </p>
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>Municipal:</strong>
+            {{ location?.municipal || 'N/A' }}
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <section *ngIf="job?.ad_content?.contactList as contacts" class="aa--mt-5">
+      <h2
+        class="aa--text-base aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+      >
+        Contacts
+      </h2>
+      <div *ngIf="contacts.length > 0; else noContacts" class="aa--space-y-2 aa--text-sm">
+        <div *ngFor="let contact of contacts">
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>Name:</strong>
+            {{ contact?.name || 'N/A' }}
+          </p>
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>Email:</strong>
+            {{ contact?.email || 'N/A' }}
+          </p>
+          <p class="aa--text-text-light dark:aa--text-text-dark">
+            <strong>Phone:</strong>
+            {{ contact?.phone || 'N/A' }}
+          </p>
+        </div>
+      </div>
+      <ng-template #noContacts>
+        <p class="aa--text-sm aa--text-secondary-dark dark:aa--text-secondary-light">
+          No contacts available.
+        </p>
+      </ng-template>
+    </section>
+
+    <section class="aa--mt-5">
+      <h2
+        class="aa--text-base aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+      >
+        Additional Details
+      </h2>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Sector:</strong>
+        {{ job?.ad_content?.sector || 'N/A' }}
+      </p>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Position Count:</strong>
+        {{ job?.ad_content?.positioncount || 'N/A' }}
+      </p>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Engagement Type:</strong>
+        {{ job?.ad_content?.engagementtype || 'N/A' }}
+      </p>
+      <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
+        <strong>Application Deadline:</strong>
+        {{ job?.ad_content?.applicationDue | date: 'medium' }}
+      </p>
+    </section>
+
+    <section class="aa--mt-5">
+      <a
+        *ngIf="job?.ad_content?.applicationUrl"
+        [href]="job?.ad_content?.applicationUrl"
+        class="aa--inline-block aa--rounded-md aa--bg-primary aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white hover:aa--shadow-lg"
+        target="_blank"
+      >
+        Apply Now
+      </a>
+    </section>
+  </div>
+</div>
