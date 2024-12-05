@@ -1,0 +1,43 @@
+<div class="aa--mx-auto aa--max-w-6xl aa--p-4">
+  <h1 class="aa--text-2xl aa--font-bold aa--text-primary dark:aa--text-primary-light">
+    My Favorites
+  </h1>
+
+  <div class="loading" *ngIf="isFetchingFavorites()">
+    <div class="aa--grid aa--grid-cols-1 aa--gap-4 sm:aa--grid-cols-2 lg:aa--grid-cols-3">
+      <aa-job-listing-card-skeleton *ngFor="let _ of skeletonArray" />
+    </div>
+  </div>
+
+  <div class="error" *ngIf="hasError() && !isFetchingFavorites()">
+    <div class="aa--rounded-lg aa--bg-red-100 aa--p-4 aa--text-center aa--text-red-700">
+      <p>Failed to load your favorite jobs. Please try again later.</p>
+    </div>
+  </div>
+
+  <div class="aa--mt-4">
+    <ng-container *ngIf="favoriteJobs$ | async as favoriteJobs">
+      <div *ngIf="favoriteJobs.length > 0; else noFavorites">
+        <div
+          class="aa--grid aa--grid-cols-1 aa--gap-4 sm:aa--grid-cols-2 lg:aa--grid-cols-3"
+        >
+          <aa-job-listing-card *ngFor="let job of favoriteJobs" [job]="job" />
+        </div>
+      </div>
+      <ng-template #noFavorites>
+        <div class="aa--flex aa--flex-col aa--items-center aa--justify-center aa--p-8">
+          <p
+            class="aa--text-center aa--text-lg aa--font-semibold aa--text-secondary-dark dark:aa--text-secondary-light"
+          >
+            You haven't added any favorite jobs yet.
+          </p>
+          <p
+            class="aa--mt-2 aa--text-center aa--text-sm aa--text-secondary-dark dark:aa--text-secondary-light"
+          >
+            Browse jobs and add them to your favorites by clicking the heart icon.
+          </p>
+        </div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>
