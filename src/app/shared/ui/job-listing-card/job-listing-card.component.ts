@@ -1,19 +1,20 @@
 import { DatePipe, NgClass } from '@angular/common';
 import { Input, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
 import {
   faBuilding,
   faMapMarkerAlt,
   faCheckCircle,
   faTimesCircle,
-  faHeart,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { FeedItem } from '../../../core/models';
+import { FavoriteToggleComponent } from '../favorite-toggle/favorite-toggle.component';
 
 @Component({
   selector: 'aa-job-listing-card',
-  imports: [DatePipe, FaIconComponent, NgClass],
+  imports: [DatePipe, FaIconComponent, NgClass, RouterLink, FavoriteToggleComponent],
   templateUrl: './job-listing-card.component.html',
   standalone: true,
 })
@@ -23,7 +24,6 @@ export class JobListingCardComponent {
   faMapMarkerAlt = faMapMarkerAlt;
   faCheckCircle = faCheckCircle;
   faTimesCircle = faTimesCircle;
-  faHeart = faHeart;
 
   /**
    * Returns the appropriate icon for the status

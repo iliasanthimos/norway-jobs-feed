@@ -64,20 +64,22 @@ export class FavoritesComponent implements OnInit {
    * @return {FeedItem[]}
    */
   private transformEntriesToItems(entries: FeedEntry[]): FeedItem[] {
-    return entries.map(entry => ({
-      id: entry.uuid,
-      url: entry.ad_content.link,
-      title: entry.ad_content.title,
-      content_text: entry.ad_content.description,
-      date_modified: entry.sistEndret,
-      _feed_entry: {
-        uuid: entry.uuid,
-        status: entry.status as 'ACTIVE' | 'INACTIVE',
-        title: entry.ad_content.title,
-        businessName: entry.ad_content.employer?.name || 'Unknown',
-        municipal: entry.ad_content.workLocations[0]?.municipal || 'Unknown',
-        sistEndret: entry.sistEndret,
-      },
-    }));
+    return entries
+      .filter(entry => entry.status === 'ACTIVE')
+      .map(entry => ({
+        id: entry.uuid,
+        url: entry.ad_content?.link || '',
+        title: entry.ad_content?.title || 'Unknown Title',
+        content_text: entry.ad_content?.description || 'No description available',
+        date_modified: entry.sistEndret || '',
+        _feed_entry: {
+          uuid: entry.uuid,
+          status: (entry.status || 'INACTIVE') as 'ACTIVE' | 'INACTIVE',
+          title: entry.ad_content?.title || 'Unknown Title',
+          businessName: entry.ad_content?.employer?.name || 'Unknown',
+          municipal: entry.ad_content?.workLocations?.[0]?.municipal || 'Unknown',
+          sistEndret: entry.sistEndret || '',
+        },
+      }));
   }
 }
