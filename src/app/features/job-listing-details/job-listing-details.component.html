@@ -26,7 +26,7 @@
       {{ job?.ad_content?.title }}
     </h1>
     <p class="aa--mt-1 aa--text-xs aa--text-secondary-dark dark:aa--text-secondary-light">
-      {{ job?.ad_content?.published | date: 'mediumDate' }}
+      {{ job?.ad_content?.published | date: 'yy/MM/yyyy' }}
     </p>
     <div
       class="transition-transform aa--absolute aa--right-0 aa--top-0 aa--mr-2 aa--mt-1 aa--cursor-pointer aa--text-accent hover:aa--scale-110"
@@ -151,7 +151,7 @@
       </p>
       <p class="aa--text-sm aa--text-text-light dark:aa--text-text-dark">
         <strong>Application Deadline:</strong>
-        {{ job?.ad_content?.applicationDue | date: 'medium' }}
+        {{ job?.ad_content?.applicationDue | date: 'dd/MM/yyyy' }}
       </p>
     </section>
 

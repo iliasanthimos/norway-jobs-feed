@@ -23,16 +23,8 @@
   </div>
 
   <ng-template #menuItems>
-    <a routerLink="/" class="aa--block hover:aa--underline" (click)="toggleMenu()">
-      Jobs
-    </a>
-    <a
-      routerLink="/favorites"
-      class="aa--block hover:aa--underline"
-      (click)="toggleMenu()"
-    >
-      Favorites
-    </a>
+    <a routerLink="/" class="aa--block hover:aa--underline">Jobs</a>
+    <a routerLink="/favorites" class="aa--block hover:aa--underline">Favorites</a>
     <button (click)="toggleTheme()">
       <fa-icon [icon]="themeService.isDarkMode() ? faSun : faMoon" />
     </button>

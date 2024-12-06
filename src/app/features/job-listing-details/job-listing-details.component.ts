@@ -2,7 +2,6 @@ import { DatePipe, NgIf, NgForOf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 import { of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
@@ -19,7 +18,6 @@ import { FavoriteToggleComponent } from '../../shared/ui/favorite-toggle/favorit
     NgIf,
     NgForOf,
     JobListingDetailsSkeletonComponent,
-    FaIconComponent,
     FavoriteToggleComponent,
   ],
   templateUrl: './job-listing-details.component.html',
