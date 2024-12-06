@@ -1,4 +1,4 @@
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { Input, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FaIconComponent, IconDefinition } from '@fortawesome/angular-fontawesome';
@@ -14,7 +14,14 @@ import { FavoriteToggleComponent } from '../favorite-toggle/favorite-toggle.comp
 
 @Component({
   selector: 'aa-job-listing-card',
-  imports: [DatePipe, FaIconComponent, NgClass, RouterLink, FavoriteToggleComponent],
+  imports: [
+    DatePipe,
+    FaIconComponent,
+    NgClass,
+    RouterLink,
+    FavoriteToggleComponent,
+    NgIf,
+  ],
   templateUrl: './job-listing-card.component.html',
   standalone: true,
 })
