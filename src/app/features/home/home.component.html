@@ -1,0 +1,106 @@
+<div class="aa--mt-5 aa--grid aa--grid-cols-12 aa--gap-4">
+  <aside
+    class="aa--col-span-12 aa--rounded-lg aa--bg-background-light aa--p-4 aa--shadow-md dark:aa--bg-background-dark lg:aa--col-span-3"
+  >
+    <h3
+      class="aa--text-lg aa--font-semibold aa--text-primary dark:aa--text-primary-light"
+    >
+      Filters
+    </h3>
+    <div class="aa--mt-4">
+      <p
+        class="aa--text-sm aa--font-semibold aa--text-secondary-dark dark:aa--text-secondary-light"
+      >
+        Last modified:
+      </p>
+      <div class="aa--mt-2">
+        <label
+          *ngFor="let range of timeRanges"
+          class="aa--text-black-dark aa--mb-2 aa--flex aa--cursor-pointer aa--items-center dark:aa--text-secondary-light"
+        >
+          <input
+            type="radio"
+            name="timeRange"
+            [value]="range.value"
+            [(ngModel)]="selectedTimeRange"
+            (change)="onTimeRangeChange(range.value)"
+            class="aa--mr-2"
+          />
+          {{ range.label }}
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <div class="aa--col-span-12 lg:aa--col-span-9">
+    <div
+      class="aa--mb-4 aa--flex aa--flex-wrap aa--items-center aa--justify-between aa--rounded-lg aa--bg-background-light aa--p-4 aa--shadow-md dark:aa--bg-background-dark"
+    >
+      <div class="aa--mb-2 aa--w-full lg:aa--mb-0 lg:aa--w-2/3">
+        <input
+          type="text"
+          placeholder="Search jobs..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchInput(searchTerm)"
+          class="aa--w-full aa--rounded-md aa--border aa--border-secondary-light aa--p-2 dark:aa--border-secondary-dark dark:aa--bg-background-dark dark:aa--text-text-dark"
+        />
+      </div>
+    </div>
+
+    <div>
+      <div class="loading" *ngIf="loading()">
+        <div
+          class="aa--grid aa--grid-cols-1 aa--gap-4 sm:aa--grid-cols-2 lg:aa--grid-cols-3"
+        >
+          <aa-job-listing-card-skeleton *ngFor="let _ of [1, 2, 3, 4, 5, 6, 7, 8, 9]" />
+        </div>
+      </div>
+
+      <div class="error" *ngIf="error()">
+        Failed to fetch jobs. Please try again later.
+      </div>
+
+      <div *ngIf="!loading() && !error()">
+        <div *ngIf="(displayJobs$ | async)?.length === 0; else jobList">
+          <div
+            class="aa--flex aa--h-full aa--flex-col aa--items-center aa--justify-center aa--p-4"
+          >
+            <p
+              class="aa--mt-4 aa--text-lg aa--font-semibold aa--text-secondary-dark dark:aa--text-secondary-light"
+            >
+              No results found
+            </p>
+          </div>
+        </div>
+        <ng-template #jobList>
+          <div
+            class="aa--grid aa--grid-cols-1 aa--gap-4 sm:aa--grid-cols-2 lg:aa--grid-cols-3"
+          >
+            <aa-job-listing-card *ngFor="let job of displayJobs$ | async" [job]="job" />
+          </div>
+
+          <!-- Pagination controls -->
+          <div
+            *ngIf="!searchTerm"
+            class="aa--mt-6 aa--flex aa--items-center aa--justify-center"
+          >
+            <button
+              (click)="fetchPreviousPage()"
+              [disabled]="paginationState().currentPageIndex === 0"
+              class="hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50 disabled:cursor-not-allowed aa--mr-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--shadow-md"
+            >
+              Previous
+            </button>
+
+            <button
+              (click)="fetchNextPage()"
+              class="hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50 disabled:cursor-not-allowed aa--ml-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--shadow-md"
+            >
+              Next
+            </button>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
