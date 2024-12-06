@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://pam-stilling-feed.nav.no",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
