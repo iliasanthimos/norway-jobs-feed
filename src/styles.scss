@@ -30,3 +30,8 @@ html {
     background-color 0.5s,
     color 0.5s;
 }
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
