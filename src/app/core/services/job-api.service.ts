@@ -4,8 +4,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { FeedPage, FeedItem, FeedEntry } from '../models';
-import { FeedMetadata } from '../models/feed-meta-data.model';
+import { FeedPage, FeedItem, FeedEntry , FeedMetadata } from '../models';
 
 @Injectable({
   providedIn: 'root',
