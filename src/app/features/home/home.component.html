@@ -14,20 +14,28 @@
         Last modified:
       </p>
       <div class="aa--mt-2">
-        <label
-          *ngFor="let range of timeRanges"
-          class="aa--text-black-dark aa--mb-2 aa--flex aa--cursor-pointer aa--items-center dark:aa--text-secondary-light"
-        >
-          <input
-            type="radio"
-            name="timeRange"
-            [value]="range.value"
-            [(ngModel)]="selectedTimeRange"
-            (change)="onTimeRangeChange(range.value)"
-            class="aa--mr-2"
-          />
-          {{ range.label }}
-        </label>
+        <ul class="aa--space-y-2">
+          <li *ngFor="let range of timeRanges">
+            <label
+              class="aa--flex aa--cursor-pointer aa--items-center aa--rounded aa--p-2 hover:aa--bg-gray-100 dark:hover:aa--bg-gray-600"
+            >
+              <input
+                type="radio"
+                name="timeRange"
+                [value]="range.value"
+                [disabled]="loading()"
+                [(ngModel)]="selectedTimeRange"
+                (change)="onTimeRangeChange(range.value)"
+                class="aa--h-4 aa--w-4 aa--border-gray-300 aa--bg-gray-100 aa--text-blue-600 focus:aa--ring-blue-500 dark:aa--border-gray-500 dark:aa--bg-gray-600 dark:aa--ring-offset-gray-700 dark:focus:aa--ring-blue-600 dark:focus:aa--ring-offset-gray-700"
+              />
+              <span
+                class="aa--ml-2 aa--text-sm aa--font-medium aa--text-gray-900 dark:aa--text-gray-300"
+              >
+                {{ range.label }}
+              </span>
+            </label>
+          </li>
+        </ul>
       </div>
     </div>
   </aside>
@@ -44,6 +52,17 @@
           (input)="onSearchInput(searchTerm)"
           class="aa--w-full aa--rounded-md aa--border aa--border-secondary-light aa--p-2 dark:aa--border-secondary-dark dark:aa--bg-background-dark dark:aa--text-text-dark"
         />
+      </div>
+      <div
+        class="aa--flex aa--w-full aa--justify-center lg:aa--ml-4 lg:aa--w-auto lg:aa--justify-end"
+      >
+        <button
+          (click)="onRefresh()"
+          [disabled]="loading()"
+          class="aa--w-full aa--rounded-md aa--bg-primary aa--px-4 aa--py-2 aa--text-white aa--shadow-sm hover:aa--shadow-md focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light lg:aa--w-auto"
+        >
+          Refresh
+        </button>
       </div>
     </div>
 
@@ -79,22 +98,28 @@
             <aa-job-listing-card *ngFor="let job of displayJobs$ | async" [job]="job" />
           </div>
 
-          <!-- Pagination controls -->
           <div
             *ngIf="!searchTerm"
-            class="aa--mt-6 aa--flex aa--items-center aa--justify-center"
+            class="aa--relative aa--mb-6 aa--mt-6 aa--flex aa--items-center aa--justify-center"
           >
             <button
               (click)="fetchPreviousPage()"
               [disabled]="paginationState().currentPageIndex === 0"
-              class="hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50 disabled:cursor-not-allowed aa--mr-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--shadow-md"
+              class="disabled:cursor-not-allowed aa--mr-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--scale-105 hover:aa--shadow-md focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light disabled:aa--opacity-50"
             >
               Previous
             </button>
 
+            <span
+              class="aa--mx-4 aa--mt-4 aa--text-sm aa--text-secondary-dark dark:aa--text-secondary-light"
+            >
+              Page {{ paginationState().currentPageIndex + 1 }} of {{ displayTotalPages }}
+            </span>
+
             <button
               (click)="fetchNextPage()"
-              class="hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50 disabled:cursor-not-allowed aa--ml-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--shadow-md"
+              [disabled]="!hasNextPage"
+              class="aa--ml-2 aa--mt-4 aa--rounded-md aa--bg-primary aa--bg-gradient-to-r aa--px-4 aa--py-2 aa--text-sm aa--font-medium aa--text-white aa--shadow-sm aa--transition-transform hover:aa--scale-105 hover:aa--shadow-md focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light disabled:aa--cursor-not-allowed disabled:aa--opacity-50"
             >
               Next
             </button>

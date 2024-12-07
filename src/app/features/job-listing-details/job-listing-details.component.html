@@ -19,7 +19,7 @@
 
 <div
   *ngIf="!loading() && !error() && job?.status === 'ACTIVE'"
-  class="job-details shadow-lg aa--mx-auto aa--max-w-3xl aa--rounded-lg aa--bg-background-light aa--p-5 dark:aa--bg-background-dark"
+  class="job-details aa--mx-auto aa--max-w-3xl aa--rounded-lg aa--bg-background-light aa--p-5 aa--shadow-lg dark:aa--bg-background-dark"
 >
   <div class="aa--relative aa--flex aa--flex-col aa--items-start">
     <h1 class="aa--text-2xl aa--font-bold aa--text-primary dark:aa--text-primary-light">
@@ -29,7 +29,7 @@
       {{ job?.ad_content?.published | date: 'yy/MM/yyyy' }}
     </p>
     <div
-      class="transition-transform aa--absolute aa--right-0 aa--top-0 aa--mr-2 aa--mt-1 aa--cursor-pointer aa--text-accent hover:aa--scale-110"
+      class="aa--absolute aa--right-0 aa--top-0 aa--mr-2 aa--mt-1 aa--cursor-pointer aa--text-accent aa--transition-transform hover:aa--scale-110"
     >
       <aa-favorite-toggle [jobId]="job?.uuid!" />
     </div>

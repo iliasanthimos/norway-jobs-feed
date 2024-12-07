@@ -129,10 +129,9 @@ The app is designed with modular components and services to ensure scalability a
     └── tsconfig.spec.json
 ```
 
+## Getting Started
 
-##  Getting Started
-
-###  Prerequisites
+### Prerequisites
 
 Before getting started with norway-jobs-feed, ensure your runtime environment meets the following requirements:
 
@@ -140,26 +139,25 @@ Before getting started with norway-jobs-feed, ensure your runtime environment me
 - **Package Manager:** Npm
 - **Node Version:** "^22.0.0"
 
-
-
-###  Installation
+### Installation
 
 Install norway-jobs-feed using one of the following methods:
 
 **Build from source:**
 
 1. Clone the norway-jobs-feed repository:
+
 ```sh
 ❯ git clone https://github.com/iliasanthimos/norway-jobs-feed
 ```
 
 2. Navigate to the project directory:
+
 ```sh
 ❯ cd norway-jobs-feed
 ```
 
 3. Install the project dependencies:
-
 
 **Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
 
@@ -167,14 +165,13 @@ Install norway-jobs-feed using one of the following methods:
 ❯ npm install
 ```
 
+### Usage
 
-
-
-###  Usage
 Run norway-jobs-feed using the following command:
 **Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
 
 ### Fetching Jobs
+
 - The app fetches job data from the [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/) and displays jobs with the following capabilities:
 
 - Filtering: Apply filters like If-Modified-Since for the latest updates.
@@ -184,6 +181,7 @@ Run norway-jobs-feed using the following command:
 - The app divides job feeds into manageable chunks using a feedId mapping with metadata. Each page is dynamically rendered and refreshed as needed.
 
 Refresh Feature
+
 - Check for new updates on the current page by refreshing the content.
 
 ```sh
@@ -191,11 +189,13 @@ Refresh Feature
 ```
 
 ### Endpoints
+
 - `GET /feed`: Fetches job listings.Flag for requesting the last page `?last=true`.
 - `GET /feed/{nextId}`: Fetches the next page of job listings using `nextId` from the previous response.
 - `GET /feedetry/{entryId}`: Fetches the entry page of job listings using `entryId` from the previous response.
 
 ### Headers
+
 - **Authorization**: Include your token using `Authorization: Bearer {authToken}`.
 - **If-Modified-Since**: Fetch data modified after the provided timestamp.
 - **If-None-Match**: ETag header is to cache resources that are unchanged.
@@ -205,31 +205,34 @@ Refresh Feature
 Update the `environment.ts` file with your specific details:
 
 Update the `environment.development.ts` file with your specific details while development and run app via `npm start`:
+
 ```typescript
 export const environment = {
   production: true, // or false for local dev
   apiUrl: '/api', // Proxy configuration
   apiVersion: 'v1', // API versioning
   authToken: 'YOUR_AUTH_TOKEN', // Replace with your actual auth token
-  defaultPageSize: 30 // Pagination size
+  defaultPageSize: 30, // Pagination size
 };
 ```
 
 ### API Configuration
+
 In proxy.config.ts, the app uses a proxy to handle CORS issues:
 
 ```json
 {
   "/api": {
-  "target": "https://pam-stilling-feed.nav.no",
-  "secure": true,
-  "changeOrigin": true,
-  "logLevel": "debug" 
+    "target": "https://pam-stilling-feed.nav.no",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
-````
+```
 
 ### Code Standards
+
 Linting: Use eslint for code quality checks.
 Formatting: Use prettier for consistent code formatting.
 To check and format code:
@@ -240,7 +243,7 @@ npm run format:check
 npm run format:write
 ```
 
-##  Acknowledgments
+## Acknowledgments
 
 - [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/)
 - Open-source libraries: Angular, Lodash, and TailwindCSS.

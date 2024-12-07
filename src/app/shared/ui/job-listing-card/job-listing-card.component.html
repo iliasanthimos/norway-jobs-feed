@@ -1,6 +1,6 @@
 <div
   *ngIf="job"
-  class="aa--hover:scale-105 aa--hover:shadow-2xl aa--flex aa--h-full aa--flex-col aa--justify-between aa--space-y-4 aa--rounded-xl aa--bg-background-light aa--p-6 aa--text-text-light aa--shadow-lg aa--transition-transform dark:aa--bg-background-dark dark:aa--text-text-dark"
+  class="aa--hover:aa--scale-105 aa--hover:shadow-2xl aa--flex aa--h-full aa--flex-col aa--justify-between aa--space-y-4 aa--rounded-xl aa--bg-background-light aa--p-6 aa--text-text-light aa--shadow-lg aa--transition-transform dark:aa--bg-background-dark dark:aa--text-text-dark"
 >
   <div>
     <div class="aa--flex aa--items-center aa--justify-between">
@@ -48,7 +48,7 @@
       Last Modified: {{ job._feed_entry.sistEndret | date: 'dd/MM/yyyy' }}
     </p>
     <button
-      class="from-primary to-accent aa--hover:opacity-95 aa--hover:scale-105 dark:aa--hover:from-primary-light dark:aa--hover:to-accent-light aa--mt-4 aa--w-full aa--rounded-lg aa--bg-primary aa--bg-gradient-to-r aa--px-6 aa--py-3 aa--text-sm aa--font-medium aa--text-white aa--shadow-md aa--transition-transform hover:aa--shadow-lg focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light"
+      class="aa--hover:opacity-95 aa--hover:scale-105 dark:aa--hover:from-primary-light dark:aa--hover:to-accent-light aa--mt-4 aa--w-full aa--rounded-lg aa--bg-primary aa--bg-gradient-to-r aa--from-primary aa--to-accent aa--px-6 aa--py-3 aa--text-sm aa--font-medium aa--text-white aa--shadow-md aa--transition-transform hover:aa--shadow-lg focus:aa--outline-none focus:aa--ring-2 focus:aa--ring-primary-light"
       type="button"
       [disabled]="job._feed_entry.status !== 'ACTIVE'"
       aria-label="View job details"

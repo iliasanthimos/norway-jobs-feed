@@ -5,7 +5,7 @@ import { debounce } from 'lodash';
 import { Observable } from 'rxjs';
 
 import { FeedItem } from '../../core/models';
-import { JobApiService } from '../../core/services';
+import { JobApiService, PaginationService } from '../../core/services';
 import {
   JobListingCardComponent,
   JobListingCardSkeletonComponent,
@@ -26,11 +26,12 @@ import {
 })
 export class HomeComponent implements OnInit {
   private jobApiService = inject(JobApiService);
-  jobs$: Observable<FeedItem[]> = this.jobApiService.jobs$;
+  private paginationService = inject(PaginationService);
+  jobs$: Observable<FeedItem[]> = this.paginationService.jobs$;
   filteredJobs$: Observable<FeedItem[]> = this.jobApiService.filteredJobs$;
   loading = this.jobApiService.loadingSignal;
   error = this.jobApiService.errorSignal;
-  paginationState = this.jobApiService.getPaginationState;
+  paginationState = this.paginationService.paginationStateSignal;
   searchTerm = '';
   selectedStatus = 'ACTIVE';
   timeRanges = [
@@ -47,9 +48,6 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchInitialData();
-    this.jobs$.subscribe(jobs => {
-      console.log('Jobs emitted from jobs$:', jobs);
-    });
   }
 
   fetchInitialData(): void {
@@ -73,6 +71,37 @@ export class HomeComponent implements OnInit {
       timeRange: this.selectedTimeRange,
       status: this.selectedStatus,
     });
+  }
+
+  /**
+   * Handles the refresh button click event.
+   * Extracts modifiedSince and etag from the current feed metadata and triggers a refresh.
+   */
+  onRefresh(): void {
+    const feedIdMap = this.paginationService.feedIdMapReadonly;
+
+    const currentFeedMetadataIndex =
+      this.paginationService.paginationStateSignal().feedMetadataIndex;
+
+    if (!currentFeedMetadataIndex) {
+      console.warn('No current feed selected to refresh.');
+      return;
+    }
+
+    const feedMetadata = feedIdMap.get(currentFeedMetadataIndex);
+
+    if (!feedMetadata) {
+      console.error(`No feed metadata found for feed ID: ${currentFeedMetadataIndex}`);
+      return;
+    }
+
+    const { modifiedSince, etag } = feedMetadata;
+
+    console.log(feedMetadata);
+
+    this.jobApiService
+      .fetchJobs(currentFeedMetadataIndex, modifiedSince, etag, true)
+      .subscribe();
   }
 
   onSearchInput(searchTerm: string): void {
@@ -111,6 +140,7 @@ export class HomeComponent implements OnInit {
    */
   onTimeRangeChange(value: string): void {
     this.selectedTimeRange = value;
+    this.searchTerm = '';
     this.fetchInitialData();
   }
 
@@ -118,7 +148,28 @@ export class HomeComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  /**
+   * Determines which jobs to display based on the search term.
+   * @returns An observable of the jobs to display.
+   */
   get displayJobs$(): Observable<FeedItem[]> {
     return this.searchTerm ? this.filteredJobs$ : this.jobs$;
+  }
+
+  /**
+   * Determines if there is a next page available.
+   */
+  get hasNextPage(): boolean {
+    return this.paginationService.hasNextPage;
+  }
+
+  /**
+   * Computes the total number of pages to display.
+   * Adds 1 to totalPages if a next page is available.
+   */
+  get displayTotalPages(): number {
+    const state = this.paginationState();
+    const isLastPage = state.currentPageIndex + 1 === state.totalPages;
+    return isLastPage && this.hasNextPage ? state.totalPages + 1 : state.totalPages;
   }
 }
