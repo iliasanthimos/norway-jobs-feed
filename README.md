@@ -58,7 +58,8 @@ The app is designed with modular components and services to ensure scalability a
 - Virtual pagination for efficient data handling.
 - Favorites management stored locally.
 - Refresh functionality to fetch the latest data.
-- Modern UI built with TailwindCSS and Angular.
+- Modern UI built with TailwindCSS and Angular
+- Light / Dark theme.
 
 ---
 
