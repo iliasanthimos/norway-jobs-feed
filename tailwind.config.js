@@ -24,7 +24,7 @@ module.exports = {
           dark: '#008f79',
         },
         background: {
-          light: '#f4f3f7',
+          light: '#e0e0e0',
           dark: '#1a202c',
         },
         text: {
