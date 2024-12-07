@@ -1,27 +1,24 @@
-<div align="left" style="position: relative;">
-<h1>NORWAY-JOBS-FEED</h1>
-<p align="left">
-	<img src="https://img.shields.io/github/last-commit/iliasanthimos/norway-jobs-feed?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-	<img src="https://img.shields.io/github/languages/top/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff" alt="repo-language-count">
-</p>
-<p align="left">Built with the tools and technologies:</p>
-<p align="left">
-  <img src="https://img.shields.io/badge/Angular-v19-DD0031?style=flat&logo=angular&logoColor=white" alt="angular">
-  <img src="https://img.shields.io/badge/TailwindCSS-v3.4-06B6D4?style=flat&logo=tailwindcss&logoColor=white" alt="tailwindcss">
-	<img src="https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white" alt="npm">
-	<img src="https://img.shields.io/badge/Autoprefixer-DD3735.svg?style=flat&logo=Autoprefixer&logoColor=white" alt="Autoprefixer">
-	<img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white" alt="HTML5">
-	<img src="https://img.shields.io/badge/PostCSS-DD3A0A.svg?style=flat&logo=PostCSS&logoColor=white" alt="PostCSS">
-	<img src="https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black" alt="Prettier">
-	<br>
-	<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
-	<img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white" alt="TypeScript">
-	<img src="https://img.shields.io/badge/Lodash-3492FF.svg?style=flat&logo=Lodash&logoColor=white" alt="Lodash">
-	<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
-</p>
-</div>
-<br clear="right">
+# NORWAY-JOBS-FEED
+
+![Last Commit](https://img.shields.io/github/last-commit/iliasanthimos/norway-jobs-feed?style=flat&logo=git&logoColor=white&color=0080ff)
+![Top Language](https://img.shields.io/github/languages/top/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff)
+![Languages Count](https://img.shields.io/github/languages/count/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff)
+
+## Built with the tools and technologies:
+
+![Angular](https://img.shields.io/badge/Angular-v19-DD0031?style=flat&logo=angular&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v3.4-06B6D4?style=flat&logo=tailwindcss&logoColor=white)
+![npm](https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white)
+![Autoprefixer](https://img.shields.io/badge/Autoprefixer-DD3735.svg?style=flat&logo=Autoprefixer&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white)
+![PostCSS](https://img.shields.io/badge/PostCSS-DD3A0A.svg?style=flat&logo=PostCSS&logoColor=white)
+![Prettier](https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black)
+
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white)
+![Lodash](https://img.shields.io/badge/Lodash-3492FF.svg?style=flat&logo=Lodash&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white)
+
 
 ---
 
