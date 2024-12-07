@@ -182,10 +182,6 @@ Refresh Feature
 
 - Check for new updates on the current page by refreshing the content.
 
-```sh
-❯ npm start
-```
-
 ### Endpoints
 
 - `GET /feed`: Fetches job listings.Flag for requesting the last page `?last=true`.
