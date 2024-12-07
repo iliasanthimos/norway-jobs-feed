@@ -1,88 +1,248 @@
-## Description
+<div align="left" style="position: relative;">
+<h1>NORWAY-JOBS-FEED</h1>
+<p align="left">
+	<img src="https://img.shields.io/github/last-commit/iliasanthimos/norway-jobs-feed?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
+	<img src="https://img.shields.io/github/languages/top/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff" alt="repo-top-language">
+	<img src="https://img.shields.io/github/languages/count/iliasanthimos/norway-jobs-feed?style=flat&color=0080ff" alt="repo-language-count">
+</p>
+<p align="left">Built with the tools and technologies:</p>
+<p align="left">
+  <img src="https://img.shields.io/badge/Angular-v19-DD0031?style=flat&logo=angular&logoColor=white" alt="angular">
+  <img src="https://img.shields.io/badge/TailwindCSS-v3.4-06B6D4?style=flat&logo=tailwindcss&logoColor=white" alt="tailwindcss">
+	<img src="https://img.shields.io/badge/npm-CB3837.svg?style=flat&logo=npm&logoColor=white" alt="npm">
+	<img src="https://img.shields.io/badge/Autoprefixer-DD3735.svg?style=flat&logo=Autoprefixer&logoColor=white" alt="Autoprefixer">
+	<img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=flat&logo=HTML5&logoColor=white" alt="HTML5">
+	<img src="https://img.shields.io/badge/PostCSS-DD3A0A.svg?style=flat&logo=PostCSS&logoColor=white" alt="PostCSS">
+	<img src="https://img.shields.io/badge/Prettier-F7B93E.svg?style=flat&logo=Prettier&logoColor=black" alt="Prettier">
+	<br>
+	<img src="https://img.shields.io/badge/JavaScript-F7DF1E.svg?style=flat&logo=JavaScript&logoColor=black" alt="JavaScript">
+	<img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=flat&logo=TypeScript&logoColor=white" alt="TypeScript">
+	<img src="https://img.shields.io/badge/Lodash-3492FF.svg?style=flat&logo=Lodash&logoColor=white" alt="Lodash">
+	<img src="https://img.shields.io/badge/ESLint-4B32C3.svg?style=flat&logo=ESLint&logoColor=white" alt="ESLint">
+</p>
+</div>
+<br clear="right">
 
-A job listing application that fetches job data from an API, processes it, and displays it with pagination and search/filter capabilities. It uses Angular for the front end, along with \`rxjs\` for reactive programming, \`prettier\` for code formatting, and \`eslint\` for linting. Tailwind CSS is used for styling the components.
-
-This app is built with Angular v19 and is ready for deployment with the following key features:
-
-- Job listing with pagination and search.
-- Fetches job data from the [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/).
-- Displays jobs based on the 'ACTIVE' status.
-- Allows filtering and searching for jobs.
-- Supports dynamic loading of job pages based on the data available.
+---
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Development](#development)
-- [Usage](#usage)
-- [API](#api)
-- [Contributing](#contributing)
-- [License](#license)
+- [Overview](#overview)
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Usage](#usage)
+- [Acknowledgments](#acknowledgments)
 
-## Installation
+---
 
-To get started, clone the repository and install the dependencies.
+## Overview
 
-\`\`\`bash
-git clone https://github.com/your-username/job-listing-app.git
-cd job-listing-app
-npm install
-\`\`\`
+**Norway-Jobs-Feed** is a job listing application built with Angular v19. It fetches job data from the [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/) and displays them with advanced features such as:
 
-## Development
+- Virtual pagination.
+- Filtering and searching.
+- Favorites management.
 
-To start the development server, use the following command:
+The app is designed with modular components and services to ensure scalability and maintainability.
 
-\`\`\`bash
-npm start
-\`\`\`
+---
 
-This will run the app at \`http://localhost:4200/\` with live reloading.
+## Features
 
-You can also run the app with the following commands:
+- Fetch and display active job listings.
+- Real-time search by job title.
+- Filtering by If-Modified-Since
+- Virtual pagination for efficient data handling.
+- Favorites management stored locally.
+- Refresh functionality to fetch the latest data.
+- Modern UI built with TailwindCSS and Angular.
 
-- \`npm build\` — Builds the app for production.
-- \`npm watch\` — Builds the app with watch mode for continuous changes.
-- \`npm test\` — Run tests with Jasmine and Karma.
+---
 
-## Usage
+## Project Structure
 
-Once the app is running, you can access the job listings. The app will fetch jobs from the API and display them with pagination. You can filter and search through the jobs using the provided search bar.
+```sh
 
-### Search and Filter Jobs
+└── norway-jobs-feed/
+    ├── README.md
+    ├── angular.json
+    ├── eslint.config.js
+    ├── package-lock.json
+    ├── package.json
+    ├── proxy.conf.json
+    ├── public
+    │   └── favicon.ico
+    ├── src
+    │   ├── app
+    │   │   ├── app.component.scss
+    │   │   ├── app.component.spec.ts
+    │   │   ├── app.component.ts
+    │   │   ├── app.config.ts
+    │   │   ├── app.routes.ts
+    │   │   ├── core
+    │   │   │   ├── interceptors
+    │   │   │   │   └── caching.interceptor.ts
+    │   │   │   ├── models
+    │   │   │   │   ├── feed-entry.model.ts
+    │   │   │   │   ├── feed-meta-data.model.ts
+    │   │   │   │   ├── feed-page.model.ts
+    │   │   │   │   └── index.ts
+    │   │   │   └── services
+    │   │   │       ├── favorites.service.ts
+    │   │   │       ├── index.ts
+    │   │   │       ├── job-api.service.ts
+    │   │   │       ├── local-storage.service.ts
+    │   │   │       └── theme.service.ts
+    │   │   ├── features
+    │   │   │   ├── favorites
+    │   │   │   │   ├── favorites.component.html
+    │   │   │   │   └── favorites.component.ts
+    │   │   │   ├── home
+    │   │   │   │   ├── home.component.html
+    │   │   │   │   └── home.component.ts
+    │   │   │   ├── index.ts
+    │   │   │   └── job-listing-details
+    │   │   │       ├── job-listing-details.component.html
+    │   │   │       └── job-listing-details.component.ts
+    │   │   └── shared
+    │   │       └── ui
+    │   │           ├── favorite-toggle
+    │   │           ├── footer
+    │   │           ├── header
+    │   │           ├── index.ts
+    │   │           ├── job-listing-card
+    │   │           ├── job-listing-card-skeleton
+    │   │           └── job-listing-details-skeleton
+    │   ├── environments
+    │   │   ├── environment.development.ts
+    │   │   └── environment.ts
+    │   ├── index.html
+    │   ├── main.ts
+    │   └── styles.scss
+    ├── tailwind.config.js
+    ├── tsconfig.app.json
+    ├── tsconfig.eslint.json
+    ├── tsconfig.json
+    └── tsconfig.spec.json
+```
 
-You can search for jobs by title, and filter them based on different criteria. Filters are applied in real-time to the displayed results.
 
-### Pagination
+##  Getting Started
 
-The app automatically paginates the job results. If there are fewer results than the page size, pagination will not be enabled.
+###  Prerequisites
 
-## API
+Before getting started with norway-jobs-feed, ensure your runtime environment meets the following requirements:
 
-The app uses the following API for fetching job listings:  
-[**NAVIKT Stilling Feed API**](https://navikt.github.io/pam-stilling-feed/)
+- **Programming Language:** TypeScript
+- **Package Manager:** Npm
+- **Node Version:** "^22.0.0"
 
-Endpoints used:
-- \`GET /feed\` — Fetches job listings.
-- \`GET /feed/{nextId}\` — Fetches the next page of job listings based on the \`nextId\` from the previous response.
+
+
+###  Installation
+
+Install norway-jobs-feed using one of the following methods:
+
+**Build from source:**
+
+1. Clone the norway-jobs-feed repository:
+```sh
+❯ git clone https://github.com/iliasanthimos/norway-jobs-feed
+```
+
+2. Navigate to the project directory:
+```sh
+❯ cd norway-jobs-feed
+```
+
+3. Install the project dependencies:
+
+
+**Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+```sh
+❯ npm install
+```
+
+
+
+
+###  Usage
+Run norway-jobs-feed using the following command:
+**Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+
+### Fetching Jobs
+- The app fetches job data from the [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/) and displays jobs with the following capabilities:
+
+- Filtering: Apply filters like If-Modified-Since for the latest updates.
+- Search: Search by job title in the fetched job list.
+- Favorites: Save and view favorite jobs, stored locally.
+- Virtual Pagination
+- The app divides job feeds into manageable chunks using a feedId mapping with metadata. Each page is dynamically rendered and refreshed as needed.
+
+Refresh Feature
+- Check for new updates on the current page by refreshing the content.
+
+```sh
+❯ npm start
+```
+
+### Endpoints
+- `GET /feed`: Fetches job listings.Flag for requesting the last page `?last=true`.
+- `GET /feed/{nextId}`: Fetches the next page of job listings using `nextId` from the previous response.
+- `GET /feedetry/{entryId}`: Fetches the entry page of job listings using `entryId` from the previous response.
 
 ### Headers
+- **Authorization**: Include your token using `Authorization: Bearer {authToken}`.
+- **If-Modified-Since**: Fetch data modified after the provided timestamp.
+- **If-None-Match**: ETag header is to cache resources that are unchanged.
 
-- \`Authorization: Bearer {token}\` — Required for authentication.
-- \`If-Modified-Since\` — Optional header for fetching data since the last modification.
+## Environment Configuration
 
-## Contributing
+Update the `environment.ts` file with your specific details:
 
-We welcome contributions! If you'd like to contribute, please fork the repository and submit a pull request with your changes.
+Update the `environment.development.ts` file with your specific details while development and run app via `npm start`:
+```typescript
+export const environment = {
+  production: true, // or false for local dev
+  apiUrl: '/api', // Proxy configuration
+  apiVersion: 'v1', // API versioning
+  authToken: 'YOUR_AUTH_TOKEN', // Replace with your actual auth token
+  defaultPageSize: 30 // Pagination size
+};
+```
 
-1. Fork the repository.
-2. Create a feature branch.
-3. Commit your changes.
-4. Push your changes to your fork.
-5. Submit a pull request to the main repository.
+### API Configuration
+In proxy.config.ts, the app uses a proxy to handle CORS issues:
 
-Please ensure your code adheres to the project's coding standards. We use \`eslint\` for linting and \`prettier\` for code formatting.
+```json
+{
+  "/api": {
+  "target": "https://pam-stilling-feed.nav.no",
+  "secure": true,
+  "changeOrigin": true,
+  "logLevel": "debug" 
+  }
+}
+````
 
-## License
+### Code Standards
+Linting: Use eslint for code quality checks.
+Formatting: Use prettier for consistent code formatting.
+To check and format code:
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+```bash
+npm run lint
+npm run format:check
+npm run format:write
+```
+
+##  Acknowledgments
+
+- [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/)
+- Open-source libraries: Angular, Lodash, and TailwindCSS.
+
+---
