@@ -168,6 +168,10 @@ Install norway-jobs-feed using one of the following methods:
 Run norway-jobs-feed using the following command:
 **Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
 
+```sh
+❯ npm start
+```
+
 ### Fetching Jobs
 
 - The app fetches job data from the [NAVIKT Stilling Feed API](https://navikt.github.io/pam-stilling-feed/) and displays jobs with the following capabilities:
