@@ -3,4 +3,5 @@ export const environment = {
   apiUrl: '/api',
   apiVersion: 'v1',
   authToken: 'YOUR_AUTH_TOKEN',
+  defaultPageSize: 30,
 };
