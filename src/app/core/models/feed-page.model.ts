@@ -8,6 +8,12 @@ export interface FeedPage {
   id: string;
   next_id: string;
   items: FeedItem[];
+  etag: string;
+  lastModified: string;
+  nextID: string;
+  modifiedSince?: string;
+  isFirst: boolean;
+  isLast?: boolean;
 }
 
 export interface FeedItem {

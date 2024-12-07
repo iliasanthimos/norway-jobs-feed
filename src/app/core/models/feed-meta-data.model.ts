@@ -6,4 +6,9 @@ export interface FeedMetadata {
   lastModified: string;
   nextID: string;
   jobs: FeedItem[];
+  modifiedSince?: string;
+  isFirst: boolean;
+  isLast?: boolean;
+  pageIndexMap: Record<number, FeedItem[]>;
+  overallPageStart: number;
 }
