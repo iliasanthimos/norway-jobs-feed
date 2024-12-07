@@ -1,46 +1,63 @@
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, finalize, map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
-import { FeedPage, FeedItem, FeedEntry , FeedMetadata } from '../models';
+import { FeedEntry, FeedItem, FeedPage } from '../models';
+import { calculateOverallPageStart, filterJobs } from '../utils';
+
+import { PaginationService } from './pagination.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JobApiService {
+  private http = inject(HttpClient);
+  private paginationService = inject(PaginationService);
+
   private baseUrl = `${environment.apiUrl}/${environment.apiVersion}`;
   private bearerToken = environment.authToken;
   private loading = signal<boolean>(false);
   private error = signal<boolean>(false);
-  private allJobs: FeedItem[] = [];
-  private jobChunks: FeedItem[][] = [];
-  private pageSize = 30;
-  private paginationState = signal<{
-    currentPageIndex: number;
-    totalPages: number;
-    feedMetadataIndex: string | null;
-  }>({
-    currentPageIndex: 0,
-    totalPages: 0,
-    feedMetadataIndex: null,
-  });
-  private feedMetadata: Record<string, FeedMetadata> = {};
-  jobs$ = new BehaviorSubject<FeedItem[]>([]);
   filteredJobs$ = new BehaviorSubject<FeedItem[]>([]);
-
-  constructor(private http: HttpClient) {}
 
   /**
    * Fetches the jobs feed from the API.
-   * @param nextId The next ID for pagination.
+   * @param nextID
    * @param modifiedSince The date string to check for modified content.
-   * @returns An observable that emits the fetched feed page or null.
+   * @param etag The ETag header value.
+   * @param isRefresh Optional flag indicating if this is a refresh operation.
+   * @returns An observable that emits the fetched feed page, HttpResponse, or null.
    */
-  fetchJobs(nextId?: string, modifiedSince?: string): Observable<FeedPage | null> {
-    const headers = this.buildHeaders(modifiedSince);
-    const url = `${this.baseUrl}/feed${modifiedSince === 'last' ? '?last=true' : nextId ? `/${nextId}` : ''}`;
+
+  fetchJobs(
+    nextID?: string,
+    modifiedSince?: string,
+    etag?: string,
+    isRefresh = false
+  ): Observable<FeedPage | HttpResponse<FeedPage> | null> {
+    const headers = this.buildHeaders({ etag, lastModified: modifiedSince });
+    // Conditional URL setting based on isRefresh flag
+    let url: string;
+
+    // Conditional URL setting based on isRefresh flag
+    if (isRefresh && nextID) {
+      // When refreshing, set URL to /feed/{pageID}
+      url = `${this.baseUrl}/feed/${nextID}`;
+    } else {
+      // Otherwise, set URL based on modifiedSince and pageID
+      url = `${this.baseUrl}/feed${
+        modifiedSince === 'last' ? '?last=true' : nextID ? `/${nextID}` : ''
+      }`;
+    }
+
+    console.log(url);
+
+    if (!nextID) {
+      console.log(`Request made to /feed (fresh request). Resetting pagination.`);
+      this.resetPagination();
+    }
 
     this.setLoading(true);
     this.setError(false);
@@ -53,36 +70,33 @@ export class JobApiService {
           const feedId = data.id;
           const etag = response.headers.get('etag') || '';
           const lastModified = response.headers.get('last-modified') || '';
-
           const activeJobs = data.items.filter(
             job => job._feed_entry.status === 'ACTIVE'
           );
 
-          this.feedMetadata[feedId] = {
-            feedId: data.id,
+          const isFirstPage = !nextID && modifiedSince !== 'last';
+          const isLast = !data.next_id;
+
+          this.paginationService.initializeFeed(feedId, {
+            feedId,
             etag,
-            nextID: data.next_id,
             lastModified,
-            jobs: activeJobs,
-          };
-
-          if (modifiedSince) {
-            this.jobChunks = [];
-          }
-
-          this.allJobs = [...this.allJobs, ...activeJobs];
-
-          const newChunks = this.chunkJobs(activeJobs, this.pageSize);
-          this.jobChunks = [...this.jobChunks, ...newChunks];
-
-          this.paginationState.set({
-            currentPageIndex: 0,
-            totalPages: Math.ceil(activeJobs.length / this.pageSize),
-            feedMetadataIndex: feedId,
+            nextID: data.next_id || '',
+            jobs: [],
+            modifiedSince: modifiedSince || '',
+            isFirst: isFirstPage,
+            isLast,
+            pageIndexMap: {},
+            overallPageStart: calculateOverallPageStart(
+              this.paginationService.feedIdMapReadonly
+            ),
           });
-          this.updatePaginationState();
 
-          this.paginateJobs();
+          this.paginationService.addJobs(feedId, activeJobs);
+
+          this.paginationService.updateFeedMetadataIndex(feedId);
+
+          this.paginationService.emitCurrentPageJobs();
         }
       }),
       map((response: HttpResponse<FeedPage>) => response.body || null),
@@ -90,7 +104,6 @@ export class JobApiService {
       finalize(() => this.setLoading(false))
     );
   }
-
   /**
    * Fetches a single job entry by its ID.
    * @param entryID The ID of the job entry to fetch.
@@ -110,71 +123,66 @@ export class JobApiService {
     );
   }
 
-  /**
-   * Searches and filters the jobs based on a search query and filter conditions.
-   * @param searchQuery The query to search within job titles.
-   * @param filters An object containing filters to apply on job attributes.
-   */
   searchAndFilter(searchQuery: string, filters: Record<string, string | null>): void {
     this.setLoading(true);
-    let filtered = this.allJobs.filter(job =>
-      job.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
 
-    for (const [key, value] of Object.entries(filters)) {
-      filtered = filtered.filter(job => {
-        if (key in job) {
-          return job[key as keyof FeedItem] === value;
-        }
-        return true;
-      });
-    }
+    const filtered: FeedItem[] = [];
+
+    this.paginationService.pageMapReadonly.forEach(jobs => {
+      const matchingJobs = filterJobs(jobs, searchQuery, filters);
+      filtered.push(...matchingJobs);
+    });
 
     this.filteredJobs$.next(filtered);
+    console.log(`Filtered jobs:`, filtered);
     this.setLoading(false);
   }
 
-  /**
-   * Paginates the fetched jobs to display only the jobs for the current page.
-   * @param pageIndex The page index to paginate. Defaults to the current page.
-   */
-  paginateJobs(pageIndex = this.paginationState().currentPageIndex): void {
-    const pageJobs = this.jobChunks[pageIndex] || [];
-    this.jobs$.next(pageJobs);
-  }
-
-  /**
-   * Fetches the next page of jobs, if available, or requests the next set of jobs from the API.
-   */
   fetchNextPage(): void {
-    const currentPage = this.paginationState();
-    const feedId = currentPage.feedMetadataIndex;
-    if (currentPage.currentPageIndex + 1 < currentPage.totalPages) {
-      this.paginationState.set({
-        currentPageIndex: currentPage.currentPageIndex + 1,
-        totalPages: currentPage.totalPages,
-        feedMetadataIndex: feedId,
-      });
-      this.paginateJobs();
-    } else {
-      const latestFeedMetadata = Object.values(this.feedMetadata).pop();
-      if (latestFeedMetadata && latestFeedMetadata.nextID) {
-        this.fetchJobs(latestFeedMetadata.nextID).subscribe();
-      }
+    const nextPageIndex = this.paginationService.getNextPageIndex();
+
+    // Case 1: Next page exists in pagination
+    if (nextPageIndex !== null) {
+      console.log(`Fetching next page: ${nextPageIndex}`);
+      this.paginationService.setCurrentPage(nextPageIndex);
+      return;
     }
+
+    // Case 2: No next page in pagination, check for `nextID`
+    if (!this.paginationService.hasNextPage) {
+      console.warn('No more pages to fetch.');
+      return;
+    }
+
+    const currentFeedMetadataIndex =
+      this.paginationService.paginationStateSignal().feedMetadataIndex!;
+    const feedData = this.paginationService.feedIdMapReadonly.get(
+      currentFeedMetadataIndex
+    )!;
+
+    this.fetchJobs(feedData.nextID).subscribe(response => {
+      if (!response || !('id' in response || 'body' in response)) {
+        console.warn('Failed to fetch new jobs or invalid response format.');
+        return;
+      }
+
+      const newFeedMetadataIndex = 'id' in response ? response.id : response.body!.id;
+      this.paginationService.updateFeedMetadataIndex(newFeedMetadataIndex);
+      this.paginationService.setCurrentPage(
+        this.paginationService.paginationStateSignal().currentPageIndex + 1
+      );
+      console.log(`Updated feedMetadataIndex to: ${newFeedMetadataIndex}`);
+      this.paginationService.emitCurrentPageJobs();
+    });
   }
 
-  /**
-   * Fetches the previous page of jobs.
-   */
   fetchPreviousPage(): void {
-    if (this.paginationState().currentPageIndex > 0) {
-      this.paginationState.set({
-        currentPageIndex: this.paginationState().currentPageIndex - 1,
-        totalPages: this.paginationState().totalPages,
-        feedMetadataIndex: this.paginationState().feedMetadataIndex,
-      });
-      this.paginateJobs();
+    const previousPageIndex = this.paginationService.getPreviousPageIndex();
+
+    if (previousPageIndex !== null) {
+      this.paginationService.setCurrentPage(previousPageIndex);
+    } else {
+      console.warn('Already at the first page.');
     }
   }
 
@@ -184,42 +192,6 @@ export class JobApiService {
    */
   setLoading(state: boolean): void {
     this.loading.set(state);
-  }
-
-  /**
-   * Updates the pagination state based on the current list of jobs.
-   */
-  private updatePaginationState(): void {
-    const totalPages = Math.ceil(this.allJobs.length / this.pageSize);
-    const currentPageIndex = this.paginationState().currentPageIndex;
-
-    if (totalPages <= 1) {
-      this.paginationState.set({
-        currentPageIndex: 0,
-        totalPages: 0,
-        feedMetadataIndex: this.paginationState().feedMetadataIndex,
-      });
-    } else {
-      this.paginationState.set({
-        currentPageIndex,
-        totalPages,
-        feedMetadataIndex: this.paginationState().feedMetadataIndex,
-      });
-    }
-  }
-
-  /**
-   * Chunks an array of items into smaller arrays based on the page size.
-   * @param array The array to chunk.
-   * @param pageSize The number of items per chunk.
-   * @returns A 2D array where each sub-array is a chunk of the original array.
-   */
-  private chunkJobs<T>(array: T[], pageSize: number): T[][] {
-    const chunks: T[][] = [];
-    for (let i = 0; i < array.length; i += pageSize) {
-      chunks.push(array.slice(i, i + pageSize));
-    }
-    return chunks;
   }
 
   /**
@@ -243,17 +215,27 @@ export class JobApiService {
 
   /**
    * Builds the HTTP headers for the API request.
-   * @param modifiedSince Optional date string to set the "If-Modified-Since" header.
    * @returns The HttpHeaders object to be used in the API request.
+   * @param options
    */
-  private buildHeaders(modifiedSince?: string): HttpHeaders {
+  private buildHeaders(options?: {
+    etag?: string;
+    lastModified?: string;
+    modifiedSince?: string;
+  }): HttpHeaders {
     let headers = new HttpHeaders({
       Accept: 'application/json',
       Authorization: `Bearer ${this.bearerToken}`,
     });
 
-    if (modifiedSince) {
-      headers = headers.set('If-Modified-Since', modifiedSince);
+    if (options?.etag) {
+      headers = headers.set('If-None-Match', options.etag);
+    }
+
+    if (options?.lastModified) {
+      headers = headers.set('If-Modified-Since', options.lastModified);
+    } else if (options?.modifiedSince) {
+      headers = headers.set('If-Modified-Since', options.modifiedSince);
     }
 
     return headers;
@@ -277,6 +259,14 @@ export class JobApiService {
    * Returns a readonly signal for the pagination state.
    */
   get getPaginationState() {
-    return this.paginationState.asReadonly();
+    return this.paginationService.paginationStateSignal;
+  }
+
+  /**
+   * Resets the pagination state and clears job-related data.
+   */
+  private resetPagination(): void {
+    this.paginationService.resetPagination();
+    console.log('Pagination state reset. All jobs and metadata cleared.');
   }
 }
